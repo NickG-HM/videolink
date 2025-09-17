@@ -1,0 +1,2015 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>VideoLink Intelligence - AI-Powered Video Ad Analytics Platform</title>
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <style>
+        :root {
+            /* Light Theme Colors */
+            --primary-color: #6366f1;
+            --primary-dark: #4f46e5;
+            --secondary-color: #f59e0b;
+            --accent-color: #10b981;
+            --danger-color: #ef4444;
+            --light-bg: #ffffff;
+            --light-card: #f8fafc;
+            --text-primary: #1e293b;
+            --text-secondary: #475569;
+            --text-muted: #64748b;
+            --border-color: #e2e8f0;
+            --gradient-primary: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            --gradient-secondary: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            --gradient-accent: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--light-bg);
+            color: var(--text-primary);
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: var(--light-bg);
+            overflow: hidden;
+        }
+
+        .floating-shape {
+            position: absolute;
+            opacity: 0.05;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-shape:nth-child(1) {
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-shape:nth-child(2) {
+            top: 20%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .floating-shape:nth-child(3) {
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        .floating-shape:nth-child(4) {
+            bottom: 10%;
+            right: 20%;
+            animation-delay: 1s;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px) rotate(0deg); }
+            33% { transform: translateY(-20px) rotate(5deg); }
+            66% { transform: translateY(10px) rotate(-5deg); }
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            border-bottom: 1px solid var(--border-color);
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .header.scrolled {
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 0;
+        }
+
+        .logo {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            text-decoration: none;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .nav-links {
+            display: flex;
+            list-style: none;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .nav-links a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            position: relative;
+        }
+
+        .nav-links a:hover {
+            color: var(--primary-color);
+        }
+
+        .nav-links a::after {
+            content: '';
+            position: absolute;
+            bottom: -5px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: var(--primary-color);
+            transition: width 0.3s ease;
+        }
+
+        .nav-links a:hover::after {
+            width: 100%;
+        }
+
+        /* Mobile menu toggle */
+        .mobile-menu-toggle {
+            display: none;
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            color: var(--text-primary);
+            cursor: pointer;
+        }
+
+        .mobile-nav-links {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background: rgba(255, 255, 255, 0.98);
+            backdrop-filter: blur(20px);
+            border-top: 1px solid var(--border-color);
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+            flex-direction: column;
+            padding: 1rem 0;
+            gap: 0;
+        }
+
+        .mobile-nav-links.active {
+            display: flex;
+        }
+
+        .mobile-nav-links a {
+            padding: 1rem 2rem;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .mobile-nav-links a:hover {
+            background: var(--light-card);
+            color: var(--primary-color);
+        }
+
+        .mobile-nav-links a:last-child {
+            border-bottom: none;
+        }
+
+        .cta-button {
+            background: var(--gradient-primary);
+            color: white !important;
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+            color: white !important;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding: 8rem 0 6rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .hero-content {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 4rem;
+            align-items: center;
+            position: relative;
+            z-index: 2;
+        }
+
+        .hero-text h1 {
+            font-size: 3.5rem;
+            font-weight: 900;
+            line-height: 1.1;
+            margin-bottom: 1.5rem;
+            background: linear-gradient(135deg, var(--text-primary) 0%, var(--primary-color) 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .hero-text p {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+            line-height: 1.7;
+        }
+
+        .hero-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-bottom: 3rem;
+        }
+
+        .btn-primary {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1.2rem 2.5rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            text-decoration: none;
+            display: inline-block;
+            position: relative;
+            overflow: hidden;
+            letter-spacing: 0.5px;
+            text-transform: uppercase;
+        }
+
+        .btn-primary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255,255,255,0.2), transparent);
+            transition: left 0.5s;
+        }
+
+        .btn-primary:hover::before {
+            left: 100%;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 20px 40px rgba(99, 102, 241, 0.4);
+            background: linear-gradient(135deg, #5b5ff7 0%, #9c5cf7 100%);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-2px) scale(1.02);
+        }
+
+        .btn-secondary {
+            background: transparent;
+            color: var(--text-primary);
+            padding: 1rem 2rem;
+            border: 2px solid var(--border-color);
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+        }
+
+        .btn-secondary:hover {
+            background: var(--text-primary);
+            color: white;
+            transform: translateY(-3px);
+        }
+
+        /* Hero Visual */
+        .hero-visual {
+            position: relative;
+        }
+
+        .dashboard-preview {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.1);
+            transform: perspective(1000px) rotateY(-5deg) rotateX(5deg);
+            transition: transform 0.3s ease;
+        }
+
+        .dashboard-preview:hover {
+            transform: perspective(1000px) rotateY(-2deg) rotateX(2deg);
+        }
+
+        .chart-container {
+            margin-bottom: 2rem;
+            position: relative;
+        }
+
+        .chart {
+            display: flex;
+            align-items: end;
+            gap: 6px;
+            height: 140px;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 15px;
+            position: relative;
+            overflow: hidden;
+            justify-content: space-between;
+            width: 100%;
+        }
+
+        .chart::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 40%, rgba(99, 102, 241, 0.05) 50%, transparent 60%);
+            animation: backgroundShimmer 4s infinite;
+            pointer-events: none;
+        }
+
+        @keyframes backgroundShimmer {
+            0% { transform: translateX(-100%) skewX(-15deg); }
+            100% { transform: translateX(200%) skewX(-15deg); }
+        }
+
+        .chart-line {
+            background: var(--gradient-primary);
+            width: 12px;
+            border-radius: 6px;
+            transition: all 0.4s ease;
+            animation: chartGrowInfinite 3s cubic-bezier(0.68, -0.55, 0.265, 1.55) infinite;
+            box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+            position: relative;
+            overflow: hidden;
+            z-index: 2;
+            flex: 1;
+            max-width: 12px;
+        }
+
+        .chart-line:hover {
+            transform: translateY(-5px) scale(1.1);
+            box-shadow: 0 10px 30px rgba(99, 102, 241, 0.6);
+        }
+
+        /* Touch device optimizations */
+        @media (hover: none) and (pointer: coarse) {
+            .chart-line:hover {
+                transform: none;
+                box-shadow: 0 6px 20px rgba(99, 102, 241, 0.4);
+            }
+            
+            .journey-card:hover {
+                transform: none;
+            }
+            
+            .pricing-card:hover {
+                transform: none;
+            }
+            
+            .stat-item:hover {
+                transform: none;
+            }
+        }
+
+        .chart-line::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: linear-gradient(45deg, transparent 30%, rgba(255,255,255,0.4) 50%, transparent 70%);
+            animation: shimmer 3.5s infinite;
+        }
+
+        .chart-line::after {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 6px;
+            height: 6px;
+            background: radial-gradient(circle, rgba(255,255,255,0.9) 0%, transparent 70%);
+            border-radius: 50%;
+            animation: sparkle 4s infinite;
+            animation-delay: var(--sparkle-delay, 0s);
+        }
+
+        @keyframes sparkle {
+            0%, 100% { opacity: 0; transform: translateX(-50%) scale(0); }
+            50% { opacity: 1; transform: translateX(-50%) scale(1); }
+        }
+
+        @keyframes chartGrow {
+            0% { 
+                height: 0; 
+                opacity: 0;
+                transform: scaleY(0);
+            }
+            50% {
+                opacity: 0.7;
+            }
+            100% { 
+                height: var(--height); 
+                opacity: 1;
+                transform: scaleY(1);
+            }
+        }
+
+        @keyframes chartGrowInfinite {
+            0% { 
+                height: 0; 
+                opacity: 0.3;
+                transform: scaleY(0);
+            }
+            25% { 
+                height: calc(var(--height) * 0.7); 
+                opacity: 0.7;
+                transform: scaleY(0.7);
+            }
+            50% { 
+                height: var(--height); 
+                opacity: 1;
+                transform: scaleY(1);
+            }
+            75% { 
+                height: calc(var(--height) * 1.2); 
+                opacity: 0.9;
+                transform: scaleY(1.2);
+            }
+            100% { 
+                height: 0; 
+                opacity: 0.3;
+                transform: scaleY(0);
+            }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        .chart-line:nth-child(1) { 
+            --height: 45%; 
+            animation-delay: 0.2s; 
+            --sparkle-delay: 1.2s;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+        }
+        .chart-line:nth-child(2) { 
+            --height: 75%; 
+            animation-delay: 0.4s; 
+            --sparkle-delay: 1.6s;
+            background: linear-gradient(135deg, #10b981 0%, #06b6d4 100%);
+        }
+        .chart-line:nth-child(3) { 
+            --height: 35%; 
+            animation-delay: 0.6s; 
+            --sparkle-delay: 2.0s;
+            background: linear-gradient(135deg, #f59e0b 0%, #ef4444 100%);
+        }
+        .chart-line:nth-child(4) { 
+            --height: 95%; 
+            animation-delay: 0.8s; 
+            --sparkle-delay: 2.4s;
+            background: linear-gradient(135deg, #8b5cf6 0%, #ec4899 100%);
+        }
+        .chart-line:nth-child(5) { 
+            --height: 65%; 
+            animation-delay: 1.0s; 
+            --sparkle-delay: 2.8s;
+            background: linear-gradient(135deg, #06b6d4 0%, #3b82f6 100%);
+        }
+        .chart-line:nth-child(6) { 
+            --height: 50%; 
+            animation-delay: 1.2s; 
+            --sparkle-delay: 3.2s;
+            background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+        }
+        .chart-line:nth-child(7) { 
+            --height: 80%; 
+            animation-delay: 1.4s; 
+            --sparkle-delay: 3.6s;
+            background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+        }
+        .chart-line:nth-child(8) { 
+            --height: 55%; 
+            animation-delay: 1.6s; 
+            --sparkle-delay: 4.0s;
+            background: linear-gradient(135deg, #ec4899 0%, #be185d 100%);
+        }
+        .chart-line:nth-child(9) { 
+            --height: 70%; 
+            animation-delay: 1.8s; 
+            --sparkle-delay: 4.4s;
+            background: linear-gradient(135deg, #8b5cf6 0%, #6d28d9 100%);
+        }
+        .chart-line:nth-child(10) { 
+            --height: 85%; 
+            animation-delay: 2.0s; 
+            --sparkle-delay: 4.8s;
+            background: linear-gradient(135deg, #06b6d4 0%, #0891b2 100%);
+        }
+        .chart-line:nth-child(11) { 
+            --height: 40%; 
+            animation-delay: 2.2s; 
+            --sparkle-delay: 5.2s;
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+        }
+        .chart-line:nth-child(12) { 
+            --height: 90%; 
+            animation-delay: 2.4s; 
+            --sparkle-delay: 5.6s;
+            background: linear-gradient(135deg, #f59e0b 0%, #ea580c 100%);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .stat-item {
+            text-align: center;
+            padding: 1rem;
+            background: linear-gradient(135deg, #f8fafc 0%, #e2e8f0 100%);
+            border-radius: 10px;
+            transition: transform 0.3s ease;
+        }
+
+        .stat-item:hover {
+            transform: translateY(-5px);
+        }
+
+        .stat-number {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .stat-label {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        /* Journey Section - Completely Redesigned */
+        .journey {
+            padding: 6rem 0;
+            background: white;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 4rem;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+            font-family: 'Space Grotesk', sans-serif;
+        }
+
+        .section-subtitle {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        /* New Journey Steps Design - No Lines! */
+        .journey-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 3rem;
+            margin-bottom: 4rem;
+        }
+
+        .journey-card {
+            background: var(--light-card);
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .journey-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            border-color: var(--primary-color);
+        }
+
+        .journey-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 4px;
+            background: var(--gradient-primary);
+            transform: scaleX(0);
+            transition: transform 0.3s ease;
+        }
+
+        .journey-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .step-badge {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: var(--gradient-primary);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 800;
+            box-shadow: 0 10px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        .card-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin: 0;
+        }
+
+        .card-description {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            line-height: 1.7;
+            margin-bottom: 1.5rem;
+        }
+
+        .card-visual {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 1rem;
+            background: white;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Visual Elements */
+        .api-animation {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .api-box {
+            width: 60px;
+            height: 60px;
+            background: var(--gradient-primary);
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+        }
+
+        .api-arrow {
+            font-size: 1.5rem;
+            color: var(--primary-color);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .brain-icon {
+            font-size: 4rem;
+            color: var(--primary-color);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .cluster-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.5rem;
+            width: 120px;
+            height: 120px;
+        }
+
+        .cluster-dot {
+            width: 100%;
+            height: 100%;
+            border-radius: 50%;
+            animation: clusterPulse 2s ease-in-out infinite;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.2);
+        }
+
+        .cluster-dot:nth-child(1) { background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%); animation-delay: 0s; }
+        .cluster-dot:nth-child(2) { background: linear-gradient(135deg, #10b981 0%, #059669 100%); animation-delay: 0.2s; }
+        .cluster-dot:nth-child(3) { background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%); animation-delay: 0.4s; }
+        .cluster-dot:nth-child(4) { background: linear-gradient(135deg, #f87171 0%, #ef4444 100%); animation-delay: 0.6s; }
+        .cluster-dot:nth-child(5) { background: linear-gradient(135deg, #34d399 0%, #10b981 100%); animation-delay: 0.8s; }
+        .cluster-dot:nth-child(6) { background: linear-gradient(135deg, #8b5cf6 0%, #6366f1 100%); animation-delay: 1.0s; }
+        .cluster-dot:nth-child(7) { background: linear-gradient(135deg, #fca5a5 0%, #f87171 100%); animation-delay: 1.2s; }
+        .cluster-dot:nth-child(8) { background: linear-gradient(135deg, #6ee7b7 0%, #34d399 100%); animation-delay: 1.4s; }
+        .cluster-dot:nth-child(9) { background: linear-gradient(135deg, #a78bfa 0%, #8b5cf6 100%); animation-delay: 1.6s; }
+
+        @keyframes clusterPulse {
+            0%, 100% { opacity: 0.8; transform: scale(1); }
+            50% { opacity: 1; transform: scale(1.15); box-shadow: 0 4px 20px rgba(0, 0, 0, 0.3); }
+        }
+
+        .insights-container {
+            display: flex;
+            flex-direction: column;
+            gap: 0.5rem;
+        }
+
+        .insight-tag {
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            text-align: center;
+            animation: slideIn 0.5s ease-out;
+        }
+
+        .insight-tag:nth-child(1) {
+            background: linear-gradient(135deg, #10b981, #059669);
+            color: white;
+            animation-delay: 0.2s;
+        }
+
+        .insight-tag:nth-child(2) {
+            background: linear-gradient(135deg, #ef4444, #dc2626);
+            color: white;
+            animation-delay: 0.4s;
+        }
+
+        .insight-tag:nth-child(3) {
+            background: linear-gradient(135deg, #f59e0b, #d97706);
+            color: white;
+            animation-delay: 0.6s;
+        }
+
+        @keyframes slideIn {
+            0% { opacity: 0; transform: translateX(-20px); }
+            100% { opacity: 1; transform: translateX(0); }
+        }
+
+        /* Example Section */
+        .example-section {
+            background: var(--light-card);
+            border-radius: 20px;
+            padding: 3rem;
+            margin-top: 4rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .example-title {
+            font-size: 2rem;
+            font-weight: 700;
+            text-align: center;
+            margin-bottom: 2rem;
+            color: var(--text-primary);
+        }
+
+        .example-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .example-stat {
+            text-align: center;
+            padding: 1.5rem;
+            background: white;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .example-stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 0.5rem;
+        }
+
+        .example-stat-label {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .example-findings {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .finding-card {
+            padding: 1.5rem;
+            border-radius: 15px;
+            border: 1px solid var(--border-color);
+        }
+
+        .finding-card.strong {
+            background: linear-gradient(135deg, #ecfdf5, #d1fae5);
+            border-color: #10b981;
+        }
+
+        .finding-card.underestimated {
+            background: linear-gradient(135deg, #fefce8, #fef3c7);
+            border-color: #f59e0b;
+        }
+
+        .finding-card.overestimated {
+            background: linear-gradient(135deg, #fef2f2, #fecaca);
+            border-color: #ef4444;
+        }
+
+        .finding-title {
+            font-size: 1.1rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .finding-description {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .example-result {
+            text-align: center;
+            padding: 2rem;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-dark));
+            border-radius: 15px;
+            color: white;
+        }
+
+        .result-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .result-metrics {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+        }
+
+        .result-metric {
+            padding: 1rem;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            backdrop-filter: blur(10px);
+        }
+
+        .result-value {
+            font-size: 1.5rem;
+            font-weight: 800;
+            margin-bottom: 0.25rem;
+        }
+
+        .result-label {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 6rem 0;
+            background: var(--light-card);
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 2rem;
+            margin-top: 3rem;
+            align-items: stretch;
+        }
+
+        .pricing-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            border: 1px solid var(--border-color);
+            position: relative;
+            transition: all 0.3s ease;
+            display: flex;
+            flex-direction: column;
+            height: 100%;
+        }
+
+        .pricing-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+        }
+
+        .pricing-card.featured {
+            border-color: var(--primary-color);
+            transform: scale(1.05);
+        }
+
+        .pricing-card.featured::before {
+            content: 'Most Popular';
+            position: absolute;
+            top: -15px;
+            left: 50%;
+            transform: translateX(-50%);
+            background: var(--gradient-primary);
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 25px;
+            font-size: 0.9rem;
+            font-weight: 600;
+        }
+
+        .plan-name {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+            text-align: center;
+        }
+
+        .plan-description {
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            font-size: 0.95rem;
+            text-align: center;
+            min-height: 2.4rem;
+        }
+
+        .plan-price {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            margin-bottom: 1.5rem;
+            text-align: center;
+        }
+
+        .plan-price span {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .plan-features {
+            list-style: none;
+            margin: 2rem 0;
+            flex-grow: 1;
+        }
+
+        .plan-features li {
+            padding: 0.75rem 0;
+            color: var(--text-secondary);
+            position: relative;
+            padding-left: 1.5rem;
+            line-height: 1.4;
+        }
+
+        .plan-features li::before {
+            content: '✓';
+            position: absolute;
+            left: 0;
+            color: var(--accent-color);
+            font-weight: bold;
+        }
+
+        .plan-button {
+            width: 100%;
+            padding: 1rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-decoration: none;
+            display: inline-block;
+            text-align: center;
+            margin-top: auto;
+        }
+
+        .plan-button.primary {
+            background: var(--gradient-primary);
+            color: white;
+        }
+
+        .plan-button.secondary {
+            background: var(--gradient-primary);
+            color: white;
+            border: 2px solid var(--primary-color);
+        }
+
+        .plan-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Contact Section */
+        .contact {
+            padding: 6rem 0;
+            background: white;
+        }
+
+        .contact-content {
+            text-align: center;
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .contact h2 {
+            font-size: 2.5rem;
+            font-weight: 800;
+            margin-bottom: 1rem;
+            color: var(--text-primary);
+        }
+
+        .contact p {
+            font-size: 1.1rem;
+            color: var(--text-secondary);
+            margin-bottom: 2rem;
+        }
+
+        .contact-form {
+            display: grid;
+            gap: 1rem;
+            max-width: 500px;
+            margin: 0 auto;
+        }
+
+        .form-group {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+        }
+
+        .form-input {
+            padding: 1rem;
+            border: 2px solid var(--border-color);
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: border-color 0.3s ease;
+            background: white;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: var(--primary-color);
+        }
+
+        .form-textarea {
+            grid-column: 1 / -1;
+            min-height: 120px;
+            resize: vertical;
+        }
+
+        .submit-button {
+            background: var(--gradient-primary);
+            color: white;
+            padding: 1rem 2rem;
+            border: none;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .submit-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 25px rgba(99, 102, 241, 0.4);
+        }
+
+        .submit-button:active {
+            transform: scale(0.98);
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--text-primary);
+            color: white;
+            text-align: center;
+            padding: 2rem 0;
+        }
+
+        /* Animations */
+        @keyframes pulse {
+            0%, 100% { opacity: 1; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.05); }
+        }
+
+        .animate-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .animate-on-scroll.animated {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Responsive Design */
+        
+        /* Large tablets and small desktops */
+        @media (max-width: 1024px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            .hero-text h1 {
+                font-size: 3rem;
+            }
+            
+            .pricing-grid {
+                gap: 1.5rem;
+            }
+            
+            .chart {
+                gap: 4px;
+            }
+            
+            .chart-line {
+                width: 10px;
+                max-width: 10px;
+            }
+        }
+        
+        /* Tablets */
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 20px;
+            }
+            
+            /* Header optimizations */
+            .nav {
+                padding: 0.75rem 0;
+            }
+            
+            .logo {
+                font-size: 1.3rem;
+            }
+            
+            .nav-links {
+                display: none;
+            }
+            
+            .mobile-menu-toggle {
+                display: block;
+            }
+            
+            .header {
+                position: relative;
+            }
+            
+            .cta-button {
+                padding: 0.6rem 1.2rem;
+                font-size: 0.9rem;
+            }
+            
+            /* Hero section optimizations */
+            .hero {
+                padding: 6rem 0 4rem;
+            }
+            
+            .hero-content {
+                grid-template-columns: 1fr;
+                text-align: center;
+                gap: 3rem;
+            }
+            
+            .hero-text h1 {
+                font-size: 2.5rem;
+                line-height: 1.2;
+                margin-bottom: 1rem;
+            }
+            
+            .hero-text p {
+                font-size: 1.1rem;
+                margin-bottom: 1.5rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                gap: 0.75rem;
+                align-items: center;
+                margin-bottom: 2rem;
+            }
+            
+            .btn-primary, .btn-secondary {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+                width: 100%;
+                max-width: 280px;
+            }
+            
+            /* Dashboard preview optimizations */
+            .dashboard-preview {
+                padding: 1.5rem;
+                transform: none;
+            }
+            
+            .dashboard-preview:hover {
+                transform: none;
+            }
+            
+            .chart {
+                height: 100px;
+                padding: 1rem;
+                gap: 3px;
+            }
+            
+            .chart-line {
+                width: 8px;
+                max-width: 8px;
+            }
+            
+            .stats-grid {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            .stat-number {
+                font-size: 1.5rem;
+            }
+            
+            .stat-label {
+                font-size: 0.8rem;
+            }
+            
+            /* Journey section optimizations */
+            .journey {
+                padding: 4rem 0;
+            }
+            
+            .section-title {
+                font-size: 2rem;
+            }
+            
+            .journey-grid {
+                grid-template-columns: 1fr;
+                gap: 2rem;
+            }
+            
+            .journey-card {
+                padding: 1.5rem;
+            }
+            
+            .step-badge {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .card-title {
+                font-size: 1.3rem;
+            }
+            
+            .api-box {
+                width: 50px;
+                height: 50px;
+                font-size: 1.2rem;
+            }
+            
+            .brain-icon {
+                font-size: 3rem;
+            }
+            
+            .cluster-grid {
+                width: 100px;
+                height: 100px;
+            }
+            
+            /* Example section optimizations */
+            .example-section {
+                padding: 2rem;
+            }
+            
+            .example-stats {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .example-findings {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .result-metrics {
+                grid-template-columns: 1fr;
+                gap: 0.75rem;
+            }
+            
+            /* Pricing section optimizations */
+            .pricing {
+                padding: 4rem 0;
+            }
+            
+            .pricing-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+                margin-top: 2rem;
+            }
+            
+            .pricing-card.featured {
+                transform: none;
+                order: -1;
+            }
+            
+            .plan-price {
+                font-size: 2.5rem;
+            }
+            
+            .plan-features li {
+                padding: 0.6rem 0;
+                font-size: 0.95rem;
+                padding-left: 1.25rem;
+            }
+            
+            .plan-features li::before {
+                left: 0;
+                top: 0.6rem;
+                font-size: 0.9rem;
+            }
+        }
+        
+        /* Mobile phones */
+        @media (max-width: 480px) {
+            .container {
+                padding: 0 15px;
+            }
+            
+            /* Header for mobile */
+            .nav {
+                padding: 0.5rem 0;
+            }
+            
+            .logo {
+                font-size: 1.2rem;
+            }
+            
+            .cta-button {
+                padding: 0.5rem 1rem;
+                font-size: 0.85rem;
+            }
+            
+            /* Hero for mobile */
+            .hero {
+                padding: 5rem 0 3rem;
+            }
+            
+            .hero-text h1 {
+                font-size: 2rem;
+                margin-bottom: 0.75rem;
+            }
+            
+            .hero-text p {
+                font-size: 1rem;
+                margin-bottom: 1.25rem;
+            }
+            
+            .btn-primary, .btn-secondary {
+                padding: 0.9rem 1.5rem;
+                font-size: 0.95rem;
+            }
+            
+            /* Chart for mobile */
+            .chart {
+                height: 80px;
+                padding: 0.75rem;
+                gap: 2px;
+            }
+            
+            .chart-line {
+                width: 6px;
+                max-width: 6px;
+            }
+            
+            .dashboard-preview {
+                padding: 1rem;
+            }
+            
+            /* Journey for mobile */
+            .journey {
+                padding: 3rem 0;
+            }
+            
+            .section-title {
+                font-size: 1.75rem;
+            }
+            
+            .section-subtitle {
+                font-size: 1rem;
+            }
+            
+            .journey-card {
+                padding: 1.25rem;
+            }
+            
+            .card-header {
+                flex-direction: column;
+                text-align: center;
+                gap: 0.75rem;
+            }
+            
+            .step-badge {
+                width: 45px;
+                height: 45px;
+                font-size: 1.1rem;
+            }
+            
+            .card-title {
+                font-size: 1.2rem;
+                margin: 0;
+            }
+            
+            /* Example section for mobile */
+            .example-title {
+                font-size: 1.5rem;
+            }
+            
+            .example-stat-number {
+                font-size: 2rem;
+            }
+            
+            .finding-title {
+                font-size: 1rem;
+            }
+            
+            .finding-description {
+                font-size: 0.85rem;
+            }
+            
+            .result-title {
+                font-size: 1.25rem;
+            }
+            
+            .result-value {
+                font-size: 1.25rem;
+            }
+            
+            .result-label {
+                font-size: 0.8rem;
+            }
+            
+            /* Pricing for mobile */
+            .pricing {
+                padding: 3rem 0;
+            }
+            
+            .pricing-card {
+                padding: 1.5rem;
+            }
+            
+            .plan-name {
+                font-size: 1.3rem;
+            }
+            
+            .plan-description {
+                font-size: 0.9rem;
+                min-height: auto;
+            }
+            
+            .plan-price {
+                font-size: 2.2rem;
+                margin-bottom: 1rem;
+            }
+            
+            .plan-features li {
+                padding: 0.5rem 0;
+                font-size: 0.9rem;
+                line-height: 1.3;
+                padding-left: 1.2rem;
+            }
+            
+            .plan-features li::before {
+                left: 0;
+                top: 0.5rem;
+                font-size: 0.85rem;
+            }
+            
+            .plan-button {
+                padding: 0.9rem;
+                font-size: 0.95rem;
+            }
+            
+            /* Footer for mobile */
+            .footer {
+                padding: 1.5rem 0;
+            }
+            
+            .footer p {
+                font-size: 0.9rem;
+                line-height: 1.4;
+            }
+        }
+        
+        /* Very small screens */
+        @media (max-width: 360px) {
+            .hero-text h1 {
+                font-size: 1.8rem;
+            }
+            
+            .chart {
+                height: 70px;
+                gap: 1px;
+            }
+            
+            .chart-line {
+                width: 5px;
+                max-width: 5px;
+            }
+            
+            .journey-card {
+                padding: 1rem;
+            }
+            
+            .pricing-card {
+                padding: 1.25rem;
+            }
+            
+            .plan-price {
+                font-size: 2rem;
+            }
+            
+            .plan-features li {
+                padding-left: 1rem;
+            }
+            
+            .plan-features li::before {
+                left: 0;
+                top: 0.4rem;
+                font-size: 0.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="floating-shape">
+            <svg width="100" height="100" viewBox="0 0 100 100">
+                <circle cx="50" cy="50" r="30" fill="url(#gradient1)" opacity="0.1"/>
+            </svg>
+        </div>
+        <div class="floating-shape">
+            <svg width="80" height="80" viewBox="0 0 80 80">
+                <rect x="20" y="20" width="40" height="40" rx="10" fill="url(#gradient2)" opacity="0.1"/>
+            </svg>
+        </div>
+        <div class="floating-shape">
+            <svg width="120" height="120" viewBox="0 0 120 120">
+                <polygon points="60,20 100,80 20,80" fill="url(#gradient3)" opacity="0.1"/>
+            </svg>
+        </div>
+        <div class="floating-shape">
+            <svg width="90" height="90" viewBox="0 0 90 90">
+                <ellipse cx="45" cy="45" rx="35" ry="20" fill="url(#gradient1)" opacity="0.1"/>
+            </svg>
+        </div>
+        
+        <svg width="0" height="0">
+            <defs>
+                <linearGradient id="gradient1" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#6366f1"/>
+                    <stop offset="100%" style="stop-color:#8b5cf6"/>
+                </linearGradient>
+                <linearGradient id="gradient2" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#10b981"/>
+                    <stop offset="100%" style="stop-color:#06b6d4"/>
+                </linearGradient>
+                <linearGradient id="gradient3" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#f59e0b"/>
+                    <stop offset="100%" style="stop-color:#ef4444"/>
+                </linearGradient>
+            </defs>
+        </svg>
+    </div>
+
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="#" class="logo">VideoLink Intelligence</a>
+                <ul class="nav-links">
+                    <li><a href="#features">Features</a></li>
+                    <li><a href="#how">How It Works</a></li>
+                    <li><a href="#pricing">Pricing</a></li>
+                    <li><a href="#contact">Contact</a></li>
+                    <li><a href="#" class="cta-button">Get Started</a></li>
+                </ul>
+                <button class="mobile-menu-toggle" aria-label="Toggle mobile menu">
+                    <i class="fas fa-bars"></i>
+                </button>
+                <div class="mobile-nav-links">
+                    <a href="#features">Features</a>
+                    <a href="#how">How It Works</a>
+                    <a href="#pricing">Pricing</a>
+                    <a href="#contact">Contact</a>
+                    <a href="#" class="cta-button">Get Started</a>
+                </div>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="hero-text">
+                    <h1>Transform Your Video Ad Performance with AI</h1>
+                    <p>Get data-driven insights that tell you exactly what video content to focus on and what to avoid. Stop guessing, start winning with intelligent video ad analytics.</p>
+                    <div class="hero-buttons">
+                        <a href="#" class="btn-primary">Start Free Trial</a>
+                        <a href="#" class="btn-secondary">Watch Demo</a>
+                    </div>
+                </div>
+                <div class="hero-visual">
+                    <div class="dashboard-preview">
+                        <div class="chart-container">
+                            <div class="chart">
+                                <div class="chart-line"></div>
+                                <div class="chart-line"></div>
+                                <div class="chart-line"></div>
+                                <div class="chart-line"></div>
+                                <div class="chart-line"></div>
+                                <div class="chart-line"></div>
+                                <div class="chart-line"></div>
+                                <div class="chart-line"></div>
+                                <div class="chart-line"></div>
+                                <div class="chart-line"></div>
+                                <div class="chart-line"></div>
+                                <div class="chart-line"></div>
+                            </div>
+                        </div>
+                        <div class="stats-grid">
+                            <div class="stat-item">
+                                <div class="stat-number">70%</div>
+                                <div class="stat-label">Prediction Accuracy</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">0.5</div>
+                                <div class="stat-label">Average ROAS Improvement</div>
+                            </div>
+                            <div class="stat-item">
+                                <div class="stat-number">50+</div>
+                                <div class="stat-label">Features on Dashboard</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Journey Section - Completely Redesigned -->
+    <section class="journey" id="how">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title">How It Works</h2>
+                <p class="section-subtitle">A simple 4-step process that transforms your video ad performance</p>
+            </div>
+            
+            <!-- New Grid Layout - No Lines! -->
+            <div class="journey-grid">
+                <div class="journey-card animate-on-scroll">
+                    <div class="card-header">
+                        <div class="step-badge">1</div>
+                        <h3 class="card-title">Connect Your Ads Manager</h3>
+                    </div>
+                    <p class="card-description">You connect your Ads Manager Account via API. Our platform securely retrieves your video creatives from Ads + Ad statistics with full data protection.</p>
+                    <div class="card-visual">
+                        <div class="api-animation">
+                            <div class="api-box"><i class="fab fa-facebook"></i></div>
+                            <div class="api-arrow"><i class="fas fa-arrow-right"></i></div>
+                            <div class="api-box"><i class="fas fa-database"></i></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="journey-card animate-on-scroll">
+                    <div class="card-header">
+                        <div class="step-badge">2</div>
+                        <h3 class="card-title">AI Data Processing</h3>
+                    </div>
+                    <p class="card-description">We use our "Secret Method" and convert all data into a special format using advanced AI algorithms, semantic analysis, and performance correlation mapping.</p>
+                    <div class="card-visual">
+                        <i class="fas fa-brain brain-icon"></i>
+                    </div>
+                </div>
+
+                <div class="journey-card animate-on-scroll">
+                    <div class="card-header">
+                        <div class="step-badge">3</div>
+                        <h3 class="card-title">Smart Clustering</h3>
+                    </div>
+                    <p class="card-description">The platform shows your ads as intelligent clusters on the dashboard, grouping similar content by semantic meaning and performance patterns.</p>
+                    <div class="card-visual">
+                        <div class="cluster-grid">
+                            <div class="cluster-dot"></div>
+                            <div class="cluster-dot"></div>
+                            <div class="cluster-dot"></div>
+                            <div class="cluster-dot"></div>
+                            <div class="cluster-dot"></div>
+                            <div class="cluster-dot"></div>
+                            <div class="cluster-dot"></div>
+                            <div class="cluster-dot"></div>
+                            <div class="cluster-dot"></div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="journey-card animate-on-scroll">
+                    <div class="card-header">
+                        <div class="step-badge">4</div>
+                        <h3 class="card-title">Actionable Insights</h3>
+                    </div>
+                    <p class="card-description">You explore various agile settings to get as many insights as you wish. Discover what works, what doesn't, and what to focus on next.</p>
+                    <div class="card-visual">
+                        <div class="insights-container">
+                            <div class="insight-tag">Focus on XYZ</div>
+                            <div class="insight-tag">Avoid ABC</div>
+                            <div class="insight-tag">Scale DEF</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Real Example Section -->
+            <div class="example-section animate-on-scroll">
+                <h3 class="example-title">🎯 Real Success Story</h3>
+                
+                <div class="example-stats">
+                    <div class="example-stat">
+                        <div class="example-stat-number">200</div>
+                        <div class="example-stat-label">Videos Analyzed</div>
+                    </div>
+                    <div class="example-stat">
+                        <div class="example-stat-number">1,000</div>
+                        <div class="example-stat-label">Ad Campaigns</div>
+                    </div>
+                    <div class="example-stat">
+                        <div class="example-stat-number">10</div>
+                        <div class="example-stat-label">Clusters Identified</div>
+                    </div>
+                </div>
+
+                <div class="example-findings">
+                    <div class="finding-card strong">
+                        <div class="finding-title">💚 Strong Performer Found</div>
+                        <div class="finding-description">User-generated content with authentic testimonials - 0.7x higher ROAS than average (2.5 instead of 1.8)</div>
+                    </div>
+                    <div class="finding-card underestimated">
+                        <div class="finding-title">💡 Hidden Gem Discovered</div>
+                        <div class="finding-description">Product demo videos with emotional storytelling - underutilized but high potential</div>
+                    </div>
+                    <div class="finding-card overestimated">
+                        <div class="finding-title">⚠️ Budget Waster Identified</div>
+                        <div class="finding-description">High-production lifestyle videos - expensive to create but poor conversion rates</div>
+                    </div>
+                </div>
+
+                <div class="example-result">
+                    <div class="result-title">🚀 Results After Implementation</div>
+                    <div class="result-metrics">
+                        <div class="result-metric">
+                            <div class="result-value">x2</div>
+                            <div class="result-label">Average CTR Increase</div>
+                        </div>
+                        <div class="result-metric">
+                            <div class="result-value">-23%</div>
+                            <div class="result-label">Ad Spend Reduction</div>
+                        </div>
+                        <div class="result-metric">
+                            <div class="result-value">$1.1M</div>
+                            <div class="result-label">Revenue Generated</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-header animate-on-scroll">
+                <h2 class="section-title">Choose Your Plan</h2>
+                <p class="section-subtitle">Flexible pricing options designed to scale with your business needs</p>
+            </div>
+            
+            <div class="pricing-grid">
+                <div class="pricing-card animate-on-scroll">
+                    <div class="plan-name">Starter</div>
+                    <div class="plan-description">Perfect for small teams and agencies</div>
+                    <div class="plan-price">$497<span>/month</span></div>
+                    <ul class="plan-features">
+                        <li>Up to 100 videos analyzed and stored</li>
+                        <li>Basic clustering algorithms</li>
+                        <li>Performance dashboards</li>
+                        <li>Email support</li>
+                        <li>Monthly reports</li>
+                    </ul>
+                    <a href="#" class="plan-button secondary">Get Started</a>
+                </div>
+                
+                <div class="pricing-card featured animate-on-scroll">
+                    <div class="plan-name">Professional</div>
+                    <div class="plan-description">Best for growing marketing teams</div>
+                    <div class="plan-price">$1,497<span>/month</span></div>
+                    <ul class="plan-features">
+                        <li>Up to 1,000 videos analyzed and stored</li>
+                        <li>Advanced AI clustering</li>
+                        <li>Predictive analytics</li>
+                        <li>Priority support</li>
+                        <li>Weekly insights reports</li>
+                    </ul>
+                    <a href="#" class="plan-button primary">Start Free Trial</a>
+                </div>
+                
+                <div class="pricing-card animate-on-scroll">
+                    <div class="plan-name">Enterprise</div>
+                    <div class="plan-description">For large organizations with custom needs</div>
+                    <div class="plan-price">%<span>based on Ad Spend</span></div>
+                    <ul class="plan-features">
+                        <li>Unlimited video analysis and storage</li>
+                        <li>White-label solutions</li>
+                        <li>Dedicated account manager</li>
+                        <li>Advanced security features</li>
+                        <li>Advanced AI clustering</li>
+                        <li>Predictive analytics</li>
+                        <li>Priority support</li>
+                        <li>Weekly insights reports</li>
+                    </ul>
+                    <a href="#" class="plan-button secondary">Contact Sales</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 VideoLink Intelligence. All rights reserved. | Transforming Video Ad Performance with AI</p>
+        </div>
+    </footer>
+
+    <script>
+        // Header scroll effect
+        window.addEventListener('scroll', () => {
+            const header = document.querySelector('.header');
+            if (window.scrollY > 100) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+        });
+
+        // Smooth scrolling for navigation links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Animate elements on scroll
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('animated');
+                }
+            });
+        }, observerOptions);
+
+        document.querySelectorAll('.animate-on-scroll').forEach(el => {
+            observer.observe(el);
+        });
+
+        // Mobile menu toggle
+        const mobileMenuToggle = document.querySelector('.mobile-menu-toggle');
+        const mobileNavLinks = document.querySelector('.mobile-nav-links');
+        const mobileMenuIcon = mobileMenuToggle.querySelector('i');
+
+        mobileMenuToggle.addEventListener('click', function() {
+            mobileNavLinks.classList.toggle('active');
+            
+            // Toggle icon
+            if (mobileNavLinks.classList.contains('active')) {
+                mobileMenuIcon.classList.remove('fa-bars');
+                mobileMenuIcon.classList.add('fa-times');
+            } else {
+                mobileMenuIcon.classList.remove('fa-times');
+                mobileMenuIcon.classList.add('fa-bars');
+            }
+        });
+
+        // Close mobile menu when clicking on links
+        document.querySelectorAll('.mobile-nav-links a').forEach(link => {
+            link.addEventListener('click', function() {
+                mobileNavLinks.classList.remove('active');
+                mobileMenuIcon.classList.remove('fa-times');
+                mobileMenuIcon.classList.add('fa-bars');
+            });
+        });
+
+        // Close mobile menu when clicking outside
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.nav')) {
+                mobileNavLinks.classList.remove('active');
+                mobileMenuIcon.classList.remove('fa-times');
+                mobileMenuIcon.classList.add('fa-bars');
+            }
+        });
+
+
+    </script>
+</body>
+</html> 
